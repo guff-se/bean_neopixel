@@ -36,11 +36,60 @@ int readValues () {
    return 0;
 }
 
+void show() {
+#ifdef USEDMX
+for(int i=0;i<NUMLIGHTS;i++) {
+  DmxSimple.write(i*3+1, dmxLights[i] >> 16);
+  DmxSimple.write(i*3+2, dmxLights[i] >>  8);
+  DmxSimple.write(i*3+3, dmxLights[i]);
+}
+#else
+  strip.show();
+#endif  
+}
+
+void setPixel(int num, uint32_t color) {
+#ifdef USEDMX
+  dmxLights[num]=color;
+#else
+  strip.setPixelColor(num,color);
+#endif
+}
+
 void setPixel(int s, int num, uint32_t color) {
-  if(s==0)
+#ifdef USEDMX
+  if(s%2)
+    dmxLights[num]=color;
+  else
+    dmxLights[NUMLEDS-num-1]=color;
+#else
+  if(s%2)
     strip.setPixelColor(num,color);
-  if(s==1)
-    strip.setPixelColor(strip.numPixels()-num-1,color);
+  else
+    strip.setPixelColor(NUMLEDS-num-1,color);
+#endif
+}
+
+uint32_t getPixel(int n) {
+#ifdef USEDMX
+  return dmxLights[n];
+#else
+  return strip.getPixelColor(n);
+#endif
+}
+
+uint32_t getPixel(int s, int num) {
+#ifdef USEDMX
+  if(s%2)
+    return dmxLights[num];
+  else
+    return dmxLights[NUMLEDS-num-1];
+#else
+  if(s%2)
+    strip.getPixelColor(num);
+  else
+    strip.getPixelColor(NUMLEDS-num-1);
+#endif
 }
 
 uint32_t colorFade(uint32_t color, int fade) {
@@ -99,18 +148,19 @@ uint32_t Wheel(byte WheelPos) {
    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
   }
 }
-
+/*
 void moveAll(int num) {
-  int x,i;
-  for(x=strip.numPixels()-1; x > 0 ; x--) {
-    strip.setPixelColor(x,strip.getPixelColor(x-1));
+  int x;
+  for(x=NUMLEDS-1; x > 0 ; x--) {
+    setPixel(x,getPixel(x-1));
   }
 }
-void moveAll2(int num) {
-  int x,i;
-  for(x=STRIPLEN-1; x > 0 ; x--) {
-    strip.setPixelColor(x,strip.getPixelColor(x-1));
-    strip.setPixelColor(strip.numPixels()-x+1,strip.getPixelColor(strip.numPixels()-x+1));
+*/
+void moveAll() {
+  for(int i=0;i<NUMSTRIPS;i++) {
+    for(int x=STRIPLEN-1; x > 0 ; x--) {
+      setPixel(i,x,getPixel(i,x-1));
+    }
   }
 }
 
@@ -118,12 +168,12 @@ void moveAll2(int num) {
 void fadeAll(float fadeSpeed) {
   uint32_t color;
   uint8_t r,g,b;
-  for(int x=0;x<strip.numPixels();x++) {
-    color=strip.getPixelColor(x);
+  for(int x=0;x<NUMLEDS;x++) {
+    color=getPixel(x);
     r=(color >> 16)  ;
     g=(color >>  8) ;
     b=(color);
-    strip.setPixelColor(x,strip.Color(r*fadeSpeed,g*fadeSpeed,b*fadeSpeed));
+    setPixel(x,strip.Color(r*fadeSpeed,g*fadeSpeed,b*fadeSpeed));
   }
 }
 

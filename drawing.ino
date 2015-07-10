@@ -30,8 +30,8 @@ void drawing() {
     
       //The NeoPixel LEDs are indexed from 0-63 which corresponds to X+8*Y
       byte cursorLED = pixel_X + (8*pixel_Y);
-      strip.setPixelColor(cursorLED, Wheel(color));
-      strip.show();
+      setPixel(cursorLED, Wheel(color));
+      show();
       LEDsTurnedOn[cursorLED]=1;
   
       
@@ -40,8 +40,8 @@ void drawing() {
       for (int i = 0; i < sizeof(LEDsTurnedOn); i++ )
       {
         if(LEDsTurnedOn[i] == 1 && i not_eq cursorLED){
-           strip.setPixelColor(i, strip.Color(0,0,0));
-           strip.show();
+           setPixel(i, strip.Color(0,0,0));
+           show();
            LEDsTurnedOn[i]=0;
         }
       }
