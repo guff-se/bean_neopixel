@@ -9,7 +9,7 @@
 #define NUMSTRIPS 1
 #define STRIPLEN 6
 #define WAVELENGTH 4
-#define DEVICENAME "DadadaDMX"
+#define DEVICENAME "DadadaDMX2"
 #define NOLINEAR
 /**/
 // Dadada settings
@@ -63,11 +63,11 @@ bool locked=false;
  
 void setup() 
 {
-  	Bean.setBeanName(DEVICENAME);
+/*  	Bean.setBeanName(DEVICENAME);
 	Bean.enableWakeOnConnect(true);
-
+*/
 #ifdef USEDMX
-  DmxSimple.usePin(1);
+  DmxSimple.usePin(4);
 #endif
   
   Serial.begin(57600);
