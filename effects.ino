@@ -1,6 +1,5 @@
-void theTree() {
-  
-}
+
+
 
 void plasma (float speed) {
   int m = (int)millis();
@@ -35,18 +34,45 @@ void strobe(int speed, uint32_t color) {
 }
 
 void stars(int probability, float fadeSpeed, int wait, uint32_t color) {
-  probability=(int)((float)probability/256*NUMLEDS);
-  while(probability>0) {
-    if(random(0,100)<probability) {
+  int prob=(int)((float)probability/256*NUMLEDS);
+  while(prob>0) {
+    if(random(0,100)<prob) {
       setPixel(random(0,NUMLEDS),color);
     }
-    probability-=100;
+    prob-=100;
   }
   fadeAll(fadeSpeed);
   show();
   delay(wait);
   readValues();
 }
+
+void stars2(int probability, float fadeSpeed, int wait, uint32_t color, uint32_t color2) {
+  int countmax=4000/wait;
+  float blendmod=1/(float)countmax;
+  int i=0;
+  int imod=1;
+  while(!readValues()) {
+    int prob=(int)((float)probability/256*NUMLEDS);
+    while(prob>0) {
+      if(random(0,100)<prob) {
+        setPixel(random(0,NUMLEDS),colorBlend(color,color2,(float)i*blendmod));
+      }
+      prob-=100;
+    }
+    fadeAll(fadeSpeed);
+    show();
+    delay(wait);
+    i+=imod;
+    if(i==countmax-1) {
+      imod=-1;
+    }
+    if(i==0) {
+      imod=1;
+    }
+  }
+}
+
 
 void rgbShots(int dist, int wait) {
     if(iterator<dist*3) {
@@ -151,3 +177,30 @@ void rainbowCycle_ol(uint8_t speed, int intensity) {
       iterator=0;
   }
 }*/
+
+void letterWipe(uint32_t color, uint16_t wait) {
+    for(int l=0; l<numLetters; l++) {
+        for(int i=0; i<letterLen[l]; i++) {
+                strip.setPixelColor(letterStart[l]+i, color);
+        }
+    strip.show();
+    if (readValues())
+      return;
+    delay(wait);
+    }
+}
+
+void letterRainbow(uint8_t wait) {
+    uint16_t i, j,l;
+    for(j=0; j<256; j++) {
+        for(l=0; l<numLetters; l++) {
+            for(i=0; i<letterLen[l]; i++) {
+                strip.setPixelColor(letterStart[l]+i, Wheel((l*20+j) & 255));
+            }
+        }
+    strip.show();
+    if (readValues())
+      return;
+    delay(wait);
+    }
+}

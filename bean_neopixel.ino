@@ -1,7 +1,10 @@
 #include <Adafruit_NeoPixel.h>
 
-/// Uncomment to use DMX
+#define LED_PIN 4
 
+
+/// Uncomment to use DMX
+/*
 #include <DmxSimple.h>
 #define USEDMX 1
 #define NUMLIGHTS 6 // should be the same as NUMLEDS
@@ -20,10 +23,23 @@
 #define WAVELENGTH 10
 #define DEVICENAME "Dadada"
 /**/
+// Makerspark sign
+
+#define NUMLEDS 304
+#define NUMSTRIPS 1
+#define LED_PIN 2
+#define STRIPLEN 304
+#define WAVELENGTH 20
+#define DEVICENAME "Makerspark"
+/**/
+#define numLetters 10
+int letterStart[numLetters]={0,42,72,100,130,163,187,214,243,276};
+char letterLen[numLetters]={42,30,28,30,33,24,27,29,33,28};
+
 ///////////////
 
 
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, 4, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 #ifdef USEDMX
   uint32_t dmxLights[NUMLIGHTS];
@@ -79,8 +95,8 @@ void setup()
     wave[i]=(sin(6.283/WAVELENGTH/2*i))*100;
   }
 
-  Colors[0]=strip.Color(255,0,0);
-  Colors[1]=strip.Color(0,255,0);
+  Colors[0]=strip.Color(0,255,100);
+  Colors[1]=strip.Color(0,0,255);
 
   for (int i=0; i<256; i++) 
     sintab[i] = (uint8_t)(sin(i/256.0*PI*2)*127+127);
@@ -89,36 +105,13 @@ void setup()
 }
  
 void loop() {
-/*
-  strip.setPixelColor(0,strip.Color(255,0,0));
-  strip.setPixelColor(1,strip.Color(0,255,0));
-  strip.setPixelColor(2,strip.Color(0,0,255));
-  strip.show();
-  */
-/*  setPixel(0,strip.Color(255,0,0));
-  setPixel(1,strip.Color(0,255,0));
-  setPixel(2,strip.Color(0,0,255));
-  show();
-  delay(1000);
-  setPixel(1,strip.Color(255,0,0));
-  setPixel(2,strip.Color(0,255,0));
-  setPixel(0,strip.Color(0,0,255));
-  show();
-  delay(1000);
-  setPixel(2,strip.Color(255,0,0));
-  setPixel(0,strip.Color(0,255,0));
-  setPixel(1,strip.Color(0,0,255));
-  show();
-  delay(1000);
-/*
-*/
   switch(effect) {
       case 13:
         rainbow((float)Value[0]/16,(int)(Value[1]/4));
         break;
       case 14:
         for(int i=0;i<NUMSTRIPS;i++) {
-          if(i%2)
+          if(!i%2)
             waves(Colors[0],Value[0]/2,Value[1],0,STRIPLEN);
           else
             waves(Colors[1],Value[2]/2,Value[3],STRIPLEN,NUMLEDS);
@@ -130,8 +123,8 @@ void loop() {
       case 16:
         if(Button[0])
           stars(Value[0]*3,.96,Value[1]/8,randomColor()); // (float)Value[1]/255
-        else
-          stars(Value[0]*3,.96,Value[1]/8,Colors[0]);
+        else 
+          stars2(Value[0]*3,.96,Value[1]/8,Colors[0],Colors[1]);
         break;
       case 17:
         if(Button[0])
@@ -145,7 +138,13 @@ void loop() {
       case 19:
         plasma(Value[0]);
         break;
+      case 20:
+        letterWipe(Colors[0],Value[0]);
+        letterWipe(Colors[1],Value[0]);
+        break;
+      case 21:
+        letterRainbow(Value[0]);
+        break;
     }
     readValues();
-/**/
 }
