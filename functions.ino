@@ -1,9 +1,9 @@
 void show() {
 #ifdef USEDMX
-for(int i=0;i<NUMLIGHTS;i++) {
-  DmxSimple.write(i*3+1, dmxLights[i] >> 16);
-  DmxSimple.write(i*3+2, dmxLights[i] >>  8);
-  DmxSimple.write(i*3+3, dmxLights[i]);
+for(int i=0;i<NUMLEDS;i++) {
+  DmxSimple.write(i*3+1, (dmxLights[i] & 0xFF0000)>>16);
+  DmxSimple.write(i*3+2, (dmxLights[i] & 0x00FF00)>>8);
+  DmxSimple.write(i*3+3, (dmxLights[i] & 0x0000FF));
 }
 #else
   strip.show();
@@ -109,6 +109,12 @@ void fadeAll(float fadeSpeed) {
     b=(color);
     setPixel(x,strip.Color(r*fadeSpeed,g*fadeSpeed,b*fadeSpeed));
   }
+}
+
+void setAll(uint32_t color) {
+  for(int i=0;i<NUMLEDS;i++)
+    setPixel(i,color);
+  show(); // Should this really be here?
 }
 
 uint32_t randomColor() {

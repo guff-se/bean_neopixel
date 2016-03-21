@@ -7,14 +7,32 @@
 /*
 #include <DmxSimple.h>
 #define USEDMX 1
-#define NUMLIGHTS 6 // should be the same as NUMLEDS
-#define NUMLEDS 6
+#define NUMLEDS 10
 #define NUMSTRIPS 1
-#define STRIPLEN 6
+#define STRIPLEN 10
 #define WAVELENGTH 4
-#define DEVICENAME "DadadaDMX2"
+#define DEVICENAME "DMXBean"
 #define NOLINEAR
+#define LED_PIN 0
+*/
 /**/
+// Hyper tree settings
+/*
+#define NUMLEDS 300
+#define NUMSTRIPS 2
+#define STRIPLEN 136
+#define WAVELENGTH 10
+#define DEVICENAME "Dadada"
+*/
+
+// Olle pyramid
+#define NUMLEDS 161
+#define NUMSTRIPS 1
+#define STRIPLEN 161
+#define WAVELENGTH 7
+#define DEVICENAME "Pyramid01"
+
+
 // Dadada settings
 /*
 #define NUMLEDS 272
@@ -24,7 +42,7 @@
 #define DEVICENAME "Dadada"
 /**/
 // Makerspark sign
-
+/*
 #define NUMLEDS 304
 #define NUMSTRIPS 1
 #define LED_PIN 2
@@ -42,7 +60,8 @@ char letterLen[numLetters]={42,30,28,30,33,24,27,29,33,28};
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUMLEDS, LED_PIN, NEO_GRB + NEO_KHZ800);
 
 #ifdef USEDMX
-  uint32_t dmxLights[NUMLIGHTS];
+  uint32_t dmxLights[NUMLEDS];
+  
 #endif
 
 
@@ -69,21 +88,22 @@ uint8_t sintab[256];
 unsigned long time;
 uint32_t Colors[2];
 //uint32_t tColors[2];
-int Value[]={25,76,130,84};
+int Value[]={33,124,130,84};
 bool Button[]={0,1,1,1};
 int iterator=0;
 float fiterator=0;
 bool locked=false;
 
-   byte effect=16, controlByte, valueByte;
+   byte effect=13 , controlByte, valueByte;
  
 void setup() 
 {
-/*  	Bean.setBeanName(DEVICENAME);
-	Bean.enableWakeOnConnect(true);
-*/
+//  	Bean.setBeanName(DEVICENAME);
+//	Bean.enableWakeOnConnect(true);
+
 #ifdef USEDMX
   DmxSimple.usePin(4);
+  DmxSimple.maxChannel(NUMLEDS*3);
 #endif
   
   Serial.begin(57600);
@@ -144,6 +164,9 @@ void loop() {
         break;
       case 21:
         letterRainbow(Value[0]);
+        break;
+      case 28:
+        setAll(Colors[0]);
         break;
     }
     readValues();

@@ -76,18 +76,18 @@ void stars2(int probability, float fadeSpeed, int wait, uint32_t color, uint32_t
 
 void rgbShots(int dist, int wait) {
     if(iterator<dist*3) {
-      for(int x=0; x<strip.numPixels();x++) {
+      for(int x=0; x<NUMLEDS;x++) {
           if((iterator+x)%(dist*3)==0)
-            strip.setPixelColor(x,strip.Color(255,0,0));
+            setPixel(x,strip.Color(255,0,0));
           else if((iterator+x)%(dist*3)==dist)
-            strip.setPixelColor(x,strip.Color(0,255,0));
+            setPixel(x,strip.Color(0,255,0));
           else if((iterator+x)%(dist*3)==dist*2)
-            strip.setPixelColor(x,strip.Color(0,0,255));
+            setPixel(x,strip.Color(0,0,255));
           else
-            strip.setPixelColor(x,0);
+            setPixel(x,0);
       }
       iterator++;
-      strip.show();
+      show();
       if (readValues())
         return;
       delay(wait);
@@ -181,9 +181,9 @@ void rainbowCycle_ol(uint8_t speed, int intensity) {
 void letterWipe(uint32_t color, uint16_t wait) {
     for(int l=0; l<numLetters; l++) {
         for(int i=0; i<letterLen[l]; i++) {
-                strip.setPixelColor(letterStart[l]+i, color);
+                setPixel(letterStart[l]+i, color);
         }
-    strip.show();
+    show();
     if (readValues())
       return;
     delay(wait);
@@ -195,12 +195,15 @@ void letterRainbow(uint8_t wait) {
     for(j=0; j<256; j++) {
         for(l=0; l<numLetters; l++) {
             for(i=0; i<letterLen[l]; i++) {
-                strip.setPixelColor(letterStart[l]+i, Wheel((l*20+j) & 255));
+                setPixel(letterStart[l]+i, Wheel((l*20+j) & 255));
             }
         }
-    strip.show();
+    show();
     if (readValues())
       return;
     delay(wait);
     }
 }
+
+
+
