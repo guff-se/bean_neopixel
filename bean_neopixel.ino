@@ -9,7 +9,7 @@
 #define USEDMX 1
 #define NUMLEDS 10
 #define NUMSTRIPS 1
-#define STRIPLEN 10
+#define NUMLEDS 10
 #define WAVELENGTH 4
 #define DEVICENAME "DMXBean"
 #define NOLINEAR
@@ -20,24 +20,36 @@
 /*
 #define NUMLEDS 300
 #define NUMSTRIPS 2
-#define STRIPLEN 136
+#define NUMLEDS 136
 #define WAVELENGTH 10
 #define DEVICENAME "Dadada"
 */
 
 // Olle pyramid
+/*
 #define NUMLEDS 161
 #define NUMSTRIPS 1
-#define STRIPLEN 161
+#define NUMLEDS 161
 #define WAVELENGTH 7
 #define DEVICENAME "Pyramid01"
+*/
+// Malin jacka
+#define NUMLEDS 23
+#define NUMSTRIPS 4
+#define WAVELENGTH 3
+#define DEVICENAME "Jacka"
 
+#define numLetters 10
+int pieceStart[numLetters]={0,6,13,18};
+char pieceLen[numLetters]={7,7,5,5};
+int pieceFlip[numLetters]={0,1,0,0};
 
 // Dadada settings
 /*
+// Dadada needs to be configured to use different lenghts of stips
 #define NUMLEDS 272
 #define NUMSTRIPS 2
-#define STRIPLEN 136
+#define NUMLEDS 136
 #define WAVELENGTH 10
 #define DEVICENAME "Dadada"
 /**/
@@ -46,13 +58,16 @@
 #define NUMLEDS 304
 #define NUMSTRIPS 1
 #define LED_PIN 2
-#define STRIPLEN 304
+#define NUMLEDS 304
 #define WAVELENGTH 20
 #define DEVICENAME "Makerspark"
 /**/
+/*
 #define numLetters 10
-int letterStart[numLetters]={0,42,72,100,130,163,187,214,243,276};
-char letterLen[numLetters]={42,30,28,30,33,24,27,29,33,28};
+int pieceStart[numLetters]={0,42,72,100,130,163,187,214,243,276};
+char pieceLen[numLetters]={42,30,28,30,33,24,27,29,33,28};
+*/
+
 
 ///////////////
 
@@ -94,13 +109,13 @@ int iterator=0;
 float fiterator=0;
 bool locked=false;
 
-   byte effect=13 , controlByte, valueByte;
+   byte effect=16 , controlByte, valueByte;
  
 void setup() 
 {
-//  	Bean.setBeanName(DEVICENAME);
-//	Bean.enableWakeOnConnect(true);
-
+/*  	Bean.setBeanName(DEVICENAME);
+	Bean.enableWakeOnConnect(true);
+*/
 #ifdef USEDMX
   DmxSimple.usePin(4);
   DmxSimple.maxChannel(NUMLEDS*3);
@@ -115,8 +130,8 @@ void setup()
     wave[i]=(sin(6.283/WAVELENGTH/2*i))*100;
   }
 
-  Colors[0]=strip.Color(0,255,100);
-  Colors[1]=strip.Color(0,0,255);
+  Colors[0]=strip.Color(0,255,0);
+  Colors[1]=strip.Color(200,255,0);
 
   for (int i=0; i<256; i++) 
     sintab[i] = (uint8_t)(sin(i/256.0*PI*2)*127+127);
@@ -129,13 +144,8 @@ void loop() {
       case 13:
         rainbow((float)Value[0]/16,(int)(Value[1]/4));
         break;
-      case 14:
-        for(int i=0;i<NUMSTRIPS;i++) {
-          if(!i%2)
-            waves(Colors[0],Value[0]/2,Value[1],0,STRIPLEN);
-          else
-            waves(Colors[1],Value[2]/2,Value[3],STRIPLEN,NUMLEDS);
-        }
+      case 14: // needs to be remade for dadada
+        waves(Colors[0],Value[0]/2,Value[1],0,NUMLEDS);
         break;
       case 15:
         rgbShots(Value[0],Value[1]);

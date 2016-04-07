@@ -1,10 +1,7 @@
-
-
-
 void plasma (float speed) {
   int m = (int)millis();
-  for (int y=0; y<2; y++) {
-    for (int x=0; x<STRIPLEN; x++) {
+  for (int y=0; y<NUMSTRIPS; y++) {
+    for (int x=0; x<pieceLen[y]; x++) {
       int ymod=y*3;
       uint8_t r = sintab[(( (int)(x*1.2) + sintab[ ((int)(ymod+m*.017+48)&0xFF) ] * 3 + 128 )&0xFF)];
       uint8_t g = sintab[(( (int)(x*1.5) + sintab[ ((int)(ymod+m*.014+12)&0xFF) ] * 1 + 128 )&0xFF)];
@@ -134,8 +131,8 @@ void rainbow(float speed, int intensity) {
   uint16_t i;
   for(int s=0;s<NUMSTRIPS;s++) {
     if(fiterator<256*5) {
-      for(i=0; i< STRIPLEN; i++) {
-        setPixel(s,i, Wheel((int)((i * intensity * 25 / STRIPLEN) + fiterator) & 255));
+      for(i=0; i< NUMLEDS; i++) {
+        setPixel(s,i, Wheel((int)((i * intensity * 25 / NUMLEDS) + fiterator) & 255));
       }
       show();
       if (readValues())
@@ -151,7 +148,7 @@ void rainbow_old(uint8_t wait) {
   uint16_t i;
   for(int s=0;s<2;s++) {
     if(iterator<256) {
-      for(i=0; i< STRIPLEN; i++) {
+      for(i=0; i< NUMLEDS; i++) {
         setPixel(s,i, Wheel((i + iterator) & 255));
       }
       show();
@@ -167,8 +164,8 @@ void rainbowCycle_ol(uint8_t speed, int intensity) {
   uint16_t i;
   for(int s=0;s<2;s++) {
     if(iterator<256*5) {
-      for(i=0; i< STRIPLEN; i++) {
-        setPixel(s,i, Wheel(((i * 256 / STRIPLEN) + iterator) & 255));
+      for(i=0; i< NUMLEDS; i++) {
+        setPixel(s,i, Wheel(((i * 256 / NUMLEDS) + iterator) & 255));
       }
       show();
       iterator+=speed;
@@ -180,8 +177,8 @@ void rainbowCycle_ol(uint8_t speed, int intensity) {
 
 void letterWipe(uint32_t color, uint16_t wait) {
     for(int l=0; l<numLetters; l++) {
-        for(int i=0; i<letterLen[l]; i++) {
-                setPixel(letterStart[l]+i, color);
+        for(int i=0; i<pieceLen[l]; i++) {
+                setPixel(pieceStart[l]+i, color);
         }
     show();
     if (readValues())
@@ -194,8 +191,8 @@ void letterRainbow(uint8_t wait) {
     uint16_t i, j,l;
     for(j=0; j<256; j++) {
         for(l=0; l<numLetters; l++) {
-            for(i=0; i<letterLen[l]; i++) {
-                setPixel(letterStart[l]+i, Wheel((l*20+j) & 255));
+            for(i=0; i<pieceLen[l]; i++) {
+                setPixel(pieceStart[l]+i, Wheel((l*20+j) & 255));
             }
         }
     show();

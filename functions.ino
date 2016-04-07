@@ -18,17 +18,17 @@ void setPixel(int num, uint32_t color) {
 #endif
 }
 
-void setPixel(int s, int num, uint32_t color) {
+void setPixel(int y, int x, uint32_t color) {
 #ifdef USEDMX
-  if(s%2)
+  if(y%2)
     dmxLights[num]=color;
   else
-    dmxLights[NUMLEDS-num-1]=color;
+    dmxLights[NUMLEDS-x-1]=color;
 #else
-  if(s%2)
-    strip.setPixelColor(num,color);
+  if(y==0)
+    strip.setPixelColor(x,color);
   else
-    strip.setPixelColor(NUMLEDS-num-1,color);
+    strip.setPixelColor(pieceStart[y]+x,color);
 #endif
 }
 
@@ -92,7 +92,7 @@ uint32_t Wheel(byte WheelPos) {
 
 void moveAll() {
   for(int i=0;i<NUMSTRIPS;i++) {
-    for(int x=STRIPLEN-1; x > 0 ; x--) {
+    for(int x=pieceLen[i]-1; x > 0 ; x--) {
       setPixel(i,x,getPixel(i,x-1));
     }
   }
